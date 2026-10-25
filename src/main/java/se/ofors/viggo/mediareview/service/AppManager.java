@@ -2,22 +2,23 @@ package se.ofors.viggo.mediareview.service;
 
 import se.ofors.viggo.mediareview.model.Movie;
 import se.ofors.viggo.mediareview.repository.Library;
+import se.ofors.viggo.mediareview.storage.FileStorage;
 import se.ofors.viggo.mediareview.storage.Storage;
 import se.ofors.viggo.mediareview.ui.GraphicsBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class AppManager {
 
     private final GraphicsBuilder graphicsBuilder = new GraphicsBuilder();
-    private Storage storage;
-    private final Library library = new Library();
+    private final Storage storage = new FileStorage();
+    private final Library library = new Library(storage);
 
-    private boolean isRunning = true;
-    private Object[] menuOptions = {"Browse", "Top Rated", "Search", "Add Movie", "Exit"};
+    private final Object[] menuOptions = {"Browse", "Top Rated", "Search", "Add Movie", "Exit"};
 
-    private String welcomeMessage = """
+    private final String welcomeMessage = """
             Welcome to Movie Ratings!
             - This program is made by Viggo Öfors
             - 2 months in to the Software Engineering Program
@@ -26,7 +27,7 @@ public class AppManager {
             """;
 
     public void start() {
-        while (isRunning) {
+        while (true) {
             int menuChoice = graphicsBuilder.multiquestion(welcomeMessage, "Movie Ratings", menuOptions);
 
             // TODO: Make the cases more readable.
@@ -35,18 +36,34 @@ public class AppManager {
                 case 1 -> IO.println("Top Rated List");
                 case 2 -> searchMovie();
                 case 3 -> addMovie();
-                default -> isRunning = false;
+                default -> exit();
             }
 
         }
     }
 
     private void addMovie() {
+        // TODO: when cancel in the producer, don't create a new movie.
         String title = graphicsBuilder.input("Enter the title");
         String producer = graphicsBuilder.input("Who is the producer?");
         Movie movie = new Movie(title, producer);
 
         library.addMovie(movie);
+    }
+
+    private void addReview(Movie movie) {
+        Object[] choices = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Back to movie"};
+        int rating = graphicsBuilder.multiquestion("How much would you rate " + movie.getTitle() + "?", movie.getTitle(), choices) + 1;
+        int backToMovie = choices.length;
+
+        if (rating == 0) {
+            exit();
+        }
+
+        if (rating != backToMovie) {
+            movie.addRating(rating);
+        }
+
     }
 
     private void listMovies() {
@@ -69,11 +86,47 @@ public class AppManager {
         Stream<Movie> movieStream = movieList.stream();
 
         String search = graphicsBuilder.input("Search for a movie");
+        List<Movie> result = new ArrayList<>();
 
-        // TODO: Instead of equals, do contains, and see if there's more movies
         // TODO: Then give a list, and choose from there.
         movieStream
-                .filter(m -> m.getTitle().equalsIgnoreCase(search))
-                .forEach(graphicsBuilder::moviePage);
+                .filter(m -> m.getTitle().contains(search))
+                .forEach(result::add);
+
+        searchResult(result);
+    }
+
+    private void searchResult(List<Movie> movies) {
+        int page = 0;
+
+        while (page < movies.size()) {
+            Movie currentMovie = movies.get(page);
+            int choice = graphicsBuilder.previousNextPage(currentMovie.getInfo(), currentMovie.getTitle());
+
+            switch (choice) {
+                // PREVIOUS PAGE
+                case 0 -> {
+                    if (page > 0) {
+                        page--;
+                    }
+                }
+                // NEXT PAGE
+                case 1 -> {
+                    if (page < movies.size() - 1) {
+                        page++;
+                    }
+                }
+                // ADD REVIEW
+                case 2 -> addReview(currentMovie);
+                // BACK TO MENU
+                case 3 -> page = movies.size();
+                default -> exit();
+            }
+        }
+    }
+
+    private void exit() {
+        storage.saveToStorage(library.getMovieList());
+        System.exit(0);
     }
 }

@@ -8,12 +8,18 @@ public class Movie {
 
     private final String title;
     private final String producer;
-    private final List<Float> ratings;
+    private List<Float> ratings = new ArrayList<>();
+    ;
 
     public Movie(String title, String producer) {
         this.title = title;
         this.producer = producer;
-        ratings = new ArrayList<>();
+    }
+
+    public Movie(String title, String producer, List<Float> ratings) {
+        this.title = title;
+        this.producer = producer;
+        this.ratings = ratings;
     }
 
     public void addRating(float amount) {
@@ -42,7 +48,7 @@ public class Movie {
 
         if (averageRating.isPresent()) {
             return title + System.lineSeparator() + "produced by: " + producer
-                    + System.lineSeparator() + "Rating: " + averageRating + "/10 with "
+                    + System.lineSeparator() + "Rating: " + averageRating.orElse(0f) + "/10 with "
                     + ratings.size() + " reviews";
         } else {
             return title + System.lineSeparator() + "produced by: " + producer
