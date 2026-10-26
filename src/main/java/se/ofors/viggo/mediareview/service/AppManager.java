@@ -32,8 +32,8 @@ public class AppManager {
 
             // TODO: Make the cases more readable.
             switch (menuChoice) {
-                case 0 -> listMovies();
-                case 1 -> IO.println("Top Rated List");
+                case 0 -> listMoviesTest();
+                case 1 -> topRated();
                 case 2 -> searchMovie();
                 case 3 -> addMovie();
                 default -> exit();
@@ -43,12 +43,13 @@ public class AppManager {
     }
 
     private void addMovie() {
-        // TODO: when cancel in the producer, don't create a new movie.
         String title = graphicsBuilder.input("Enter the title");
         String producer = graphicsBuilder.input("Who is the producer?");
-        Movie movie = new Movie(title, producer);
 
-        library.addMovie(movie);
+        if (title != null && producer != null) {
+            Movie movie = new Movie(title, producer);
+            library.addMovie(movie);
+        }
     }
 
     private void addReview(Movie movie) {
@@ -81,6 +82,24 @@ public class AppManager {
         }
     }
 
+    private void listMoviesTest() {
+        List<Movie> movieList = library.getMovieList();
+
+        if (movieList.isEmpty()) {
+            graphicsBuilder.output("List is empty.", "Movies");
+        } else {
+            String movies = "";
+
+            for (int i = 0; i < movieList.size(); i++) {
+                movies += i + 1 + ". " + movieList.get(i).getTitle() + System.lineSeparator();
+                if ((i + 1) % 20 == 0) {
+                    graphicsBuilder.previousNextPage(movies, "Movies");
+                    movies = ""; // Reset list
+                }
+            }
+        }
+    }
+
     private void searchMovie() {
         List<Movie> movieList = library.getMovieList();
         Stream<Movie> movieStream = movieList.stream();
@@ -88,7 +107,6 @@ public class AppManager {
         String search = graphicsBuilder.input("Search for a movie");
         List<Movie> result = new ArrayList<>();
 
-        // TODO: Then give a list, and choose from there.
         movieStream
                 .filter(m -> m.getTitle().contains(search))
                 .forEach(result::add);
@@ -123,6 +141,28 @@ public class AppManager {
                 default -> exit();
             }
         }
+    }
+
+    private void topRated() {
+        List<Movie> movies = library.getMovieList();
+        movies.sort((m1, m2) -> Float.compare(
+                m2.getAverageRating().orElse(0f),
+                m1.getAverageRating().orElse(0f)
+        ));
+
+        String topRatedMovies = "";
+        int index = 0;
+
+        for (Movie movie : movies) {
+            topRatedMovies += index + 1 + ". " + movie.getTitle() + " (" + movie.getAverageRating().orElse(0f) + "/10)" + System.lineSeparator();
+            index++;
+
+            if (index == 10) {
+                break;
+            }
+        }
+
+        graphicsBuilder.output(topRatedMovies, "Top 10 Rated Movies");
     }
 
     private void exit() {
