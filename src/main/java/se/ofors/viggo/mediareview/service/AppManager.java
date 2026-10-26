@@ -5,9 +5,12 @@ import se.ofors.viggo.mediareview.repository.Library;
 import se.ofors.viggo.mediareview.storage.FileStorage;
 import se.ofors.viggo.mediareview.storage.Storage;
 import se.ofors.viggo.mediareview.ui.GraphicsBuilder;
+import se.ofors.viggo.mediareview.ui.MenuOption;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntFunction;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class AppManager {
@@ -15,8 +18,6 @@ public class AppManager {
     private final GraphicsBuilder graphicsBuilder = new GraphicsBuilder();
     private final Storage storage = new FileStorage();
     private final Library library = new Library(storage);
-
-    private final Object[] menuOptions = {"Browse", "Top Rated", "Search", "Add Movie", "Exit"};
 
     private final String welcomeMessage = """
             Welcome to Movie Ratings!
@@ -28,17 +29,13 @@ public class AppManager {
 
     public void start() {
         while (true) {
-            int menuChoice = graphicsBuilder.multiquestion(welcomeMessage, "Movie Ratings", menuOptions);
-
-            // TODO: Make the cases more readable.
-            switch (menuChoice) {
-                case 0 -> listMoviesTest();
-                case 1 -> topRated();
-                case 2 -> searchMovie();
-                case 3 -> addMovie();
-                default -> exit();
-            }
-
+            graphicsBuilder.multiQuestion(welcomeMessage, "Movie Ratings", List.of(
+                    MenuOption.of("Browse", this::listMoviesTest),
+                    MenuOption.of("Top Rated", this::topRated),
+                    MenuOption.of("Search", this::searchMovie),
+                    MenuOption.of("Add Movie", this::addMovie),
+                    MenuOption.of("Exit", this::exit)
+            ));
         }
     }
 
@@ -53,18 +50,16 @@ public class AppManager {
     }
 
     private void addReview(Movie movie) {
-        Object[] choices = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Back to movie"};
-        int rating = graphicsBuilder.multiquestion("How much would you rate " + movie.getTitle() + "?", movie.getTitle(), choices) + 1;
-        int backToMovie = choices.length;
+        ArrayList<MenuOption> options = new ArrayList<>(IntStream.range(0, 10)
+                .mapToObj(reviewMovieOption(movie))
+                .toList());
+        options.add(new MenuOption("Back to Movie", () -> {}));
 
-        if (rating == 0) {
-            exit();
-        }
+        graphicsBuilder.multiQuestion(welcomeMessage, "Movie Ratings", options);
+    }
 
-        if (rating != backToMovie) {
-            movie.addRating(rating);
-        }
-
+    private static IntFunction<MenuOption> reviewMovieOption(Movie movie) {
+        return i -> new MenuOption(Integer.toString(i), () -> movie.addRating(i));
     }
 
     private void listMovies() {

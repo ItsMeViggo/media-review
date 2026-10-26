@@ -3,19 +3,23 @@ package se.ofors.viggo.mediareview.ui;
 import se.ofors.viggo.mediareview.model.Movie;
 
 import javax.swing.*;
+import java.util.List;
 
 public class GraphicsBuilder {
-    public int multiquestion(String question, String title, Object[] choices) {
-        return JOptionPane.showOptionDialog(
+
+    public void multiQuestion(String question, String title, List<MenuOption> choices) {
+        List<String> choiceTexts = choices.stream().map(MenuOption::text).toList();
+        int choice =  JOptionPane.showOptionDialog(
                 null,
                 question,
                 title,
                 JOptionPane.DEFAULT_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                choices,
-                choices[0]
+                choiceTexts.toArray(),
+                choiceTexts.getFirst()
         );
+        choices.get(choice).select().run();
     }
 
     public String input(String prompt) {
