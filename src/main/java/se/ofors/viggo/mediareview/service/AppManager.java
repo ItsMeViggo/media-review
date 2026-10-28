@@ -117,11 +117,11 @@ public class AppManager {
 
         String search = graphicsBuilder.input("Search for a movie");
 
-        if (search != null ) {
+        if (search != null) {
             List<Movie> result = new ArrayList<>();
 
             movieStream
-                    .filter(m -> m.getTitle().contains(search))
+                    .filter(m -> m.getTitle().toLowerCase().contains(search.toLowerCase()))
                     .forEach(result::add);
 
             searchResult(result);
