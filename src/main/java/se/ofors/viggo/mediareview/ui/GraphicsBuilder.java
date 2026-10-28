@@ -22,12 +22,18 @@ public class GraphicsBuilder {
         return JOptionPane.showInputDialog(prompt);
     }
 
-    public void output(String output) {
-        JOptionPane.showMessageDialog(null, output);
-    }
+    public int output(String output, String title, Object[] choices) {
 
-    public void output(String output, String pageTitle) {
-        JOptionPane.showMessageDialog(null, output, pageTitle, JOptionPane.INFORMATION_MESSAGE);
+        return JOptionPane.showOptionDialog(
+                null,
+                output,
+                title,
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                choices,
+                choices[0]
+        );
     }
 
     public int moviePage(Movie movie) {
@@ -45,8 +51,7 @@ public class GraphicsBuilder {
         );
     }
 
-    public int previousNextPage(String info, String title) {
-        Object[] choices = {"Go to previous", "Go to next", "Add review", "Back to menu"};
+    public int previousNextPage(String info, String title, Object[] choices) {
 
         return JOptionPane.showOptionDialog(
                 null,

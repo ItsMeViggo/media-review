@@ -6,6 +6,7 @@ import se.ofors.viggo.mediareview.storage.FileStorage;
 import se.ofors.viggo.mediareview.storage.Storage;
 import se.ofors.viggo.mediareview.ui.GraphicsBuilder;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -30,9 +31,8 @@ public class AppManager {
         while (true) {
             int menuChoice = graphicsBuilder.multiquestion(welcomeMessage, "Movie Ratings", menuOptions);
 
-            // TODO: Make the cases more readable.
             switch (menuChoice) {
-                case 0 -> listMoviesTest();
+                case 0 -> listMovies();
                 case 1 -> topRated();
                 case 2 -> searchMovie();
                 case 3 -> addMovie();
@@ -46,7 +46,7 @@ public class AppManager {
         String title = graphicsBuilder.input("Enter the title");
         String producer = graphicsBuilder.input("Who is the producer?");
 
-        if (title != null && producer != null) {
+        if (title != null && producer != null && !title.isBlank() && !producer.isBlank()) {
             Movie movie = new Movie(title, producer);
             library.addMovie(movie);
         }
@@ -69,32 +69,43 @@ public class AppManager {
 
     private void listMovies() {
         List<Movie> movieList = library.getMovieList();
+        List<String> movieTitles = new ArrayList<>();
+        String movies = "";
 
         if (movieList.isEmpty()) {
-            graphicsBuilder.output("List is empty.", "Movies");
+            graphicsBuilder.previousNextPage("No movies yet.", "Browse Movies", new Object[]{"Back to menu"});
         } else {
-            String movies = "";
             for (int i = 0; i < movieList.size(); i++) {
-                int index = i + 1;
-                movies += index + ". " + movieList.get(i).getTitle() + System.lineSeparator();
-            }
-            graphicsBuilder.output(movies, "Movies");
-        }
-    }
+                movies += (i+1) + ". " + movieList.get(i).getTitle() + System.lineSeparator();
 
-    private void listMoviesTest() {
-        List<Movie> movieList = library.getMovieList();
-
-        if (movieList.isEmpty()) {
-            graphicsBuilder.output("List is empty.", "Movies");
-        } else {
-            String movies = "";
-
-            for (int i = 0; i < movieList.size(); i++) {
-                movies += i + 1 + ". " + movieList.get(i).getTitle() + System.lineSeparator();
                 if ((i + 1) % 20 == 0) {
-                    graphicsBuilder.previousNextPage(movies, "Movies");
-                    movies = ""; // Reset list
+                    movieTitles.add(movies);
+                    movies = "";
+                }
+            }
+
+            if (!movieTitles.getLast().equals(movies)) {
+                movieTitles.add(movies);
+            }
+
+            int page = 0;
+            boolean browsing = true;
+            while (browsing) {
+                int choice = graphicsBuilder.previousNextPage(movieTitles.get(page), "Browse Movies", new Object[]{"Go to previous", "Go to next", "Back to menu"});
+
+                switch (choice) {
+                    case 0 -> {
+                        if (page != 0) {
+                            page--;
+                        }
+                    }
+                    case 1 -> {
+                        if (page != (movieTitles.size() - 1)) {
+                            page++;
+                        }
+                    }
+                    case 2 -> browsing = false;
+                    default -> exit();
                 }
             }
         }
@@ -105,13 +116,16 @@ public class AppManager {
         Stream<Movie> movieStream = movieList.stream();
 
         String search = graphicsBuilder.input("Search for a movie");
-        List<Movie> result = new ArrayList<>();
 
-        movieStream
-                .filter(m -> m.getTitle().contains(search))
-                .forEach(result::add);
+        if (search != null ) {
+            List<Movie> result = new ArrayList<>();
 
-        searchResult(result);
+            movieStream
+                    .filter(m -> m.getTitle().contains(search))
+                    .forEach(result::add);
+
+            searchResult(result);
+        }
     }
 
     private void searchResult(List<Movie> movies) {
@@ -119,7 +133,7 @@ public class AppManager {
 
         while (page < movies.size()) {
             Movie currentMovie = movies.get(page);
-            int choice = graphicsBuilder.previousNextPage(currentMovie.getInfo(), currentMovie.getTitle());
+            int choice = graphicsBuilder.previousNextPage(currentMovie.getInfo(), currentMovie.getTitle(), new Object[]{"Go to previous", "Go to next", "Add review", "Back to menu"});
 
             switch (choice) {
                 // PREVIOUS PAGE
@@ -162,7 +176,11 @@ public class AppManager {
             }
         }
 
-        graphicsBuilder.output(topRatedMovies, "Top 10 Rated Movies");
+        int choice = graphicsBuilder.output(topRatedMovies, "Top 10 Rated Movies", new Object[]{"OK"});
+
+        if (choice == JOptionPane.DEFAULT_OPTION) {
+            exit();
+        }
     }
 
     private void exit() {
