@@ -3,9 +3,6 @@ package se.ofors.viggo.mediareview.storage;
 import com.google.gson.Gson;
 import se.ofors.viggo.mediareview.model.Movie;
 
-import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,9 +12,14 @@ import java.util.List;
 
 public class DatabaseStorage implements Storage {
 
-    private final String filePath = "movies.json";
-    private final Path path = Path.of(filePath);
+    private final String filePath;
+    private final Path path;
     private final Gson gson = new Gson();
+
+    public DatabaseStorage(String filePath) {
+        this.filePath = filePath;
+        path = Path.of(filePath);
+    }
 
     @Override
     public void saveToStorage(List<Movie> movies) {

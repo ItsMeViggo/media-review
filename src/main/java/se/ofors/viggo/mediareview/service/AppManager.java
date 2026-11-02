@@ -3,7 +3,6 @@ package se.ofors.viggo.mediareview.service;
 import se.ofors.viggo.mediareview.model.Movie;
 import se.ofors.viggo.mediareview.repository.Library;
 import se.ofors.viggo.mediareview.storage.DatabaseStorage;
-import se.ofors.viggo.mediareview.storage.FileStorage;
 import se.ofors.viggo.mediareview.storage.Storage;
 import se.ofors.viggo.mediareview.ui.GraphicsBuilder;
 
@@ -15,7 +14,7 @@ import java.util.stream.Stream;
 public class AppManager {
 
     private final GraphicsBuilder graphicsBuilder = new GraphicsBuilder();
-    private final Storage storage = new DatabaseStorage();
+    private final Storage storage = new DatabaseStorage("movies.json");
     private final Library library = new Library(storage);
 
     private final Object[] menuOptions = {"Browse", "Top Rated", "Search", "Add Movie", "Exit"};
@@ -77,7 +76,7 @@ public class AppManager {
             graphicsBuilder.previousNextPage("No movies yet.", "Browse Movies", new Object[]{"Back to menu"});
         } else {
             for (int i = 0; i < movieList.size(); i++) {
-                movies += (i+1) + ". " + movieList.get(i).getTitle() + System.lineSeparator();
+                movies += (i + 1) + ". " + movieList.get(i).getTitle() + System.lineSeparator();
 
                 if ((i + 1) % 20 == 0) {
                     movieTitles.add(movies);
