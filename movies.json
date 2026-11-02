@@ -30,17 +30,17 @@
 {"title":"Django Unchained","producer":"Columbia Pictures","ratings":[9.0,9.0,10.0,8.0]}
 {"title":"The Wolf of Wall Street","producer":"Paramount Pictures","ratings":[9.0,9.0,8.0,10.0]}
 {"title":"Jurassic Park","producer":"Universal Pictures","ratings":[9.0,8.0,10.0]}
-{"title":"Harry Potter and the Goblet of Fire","producer":"Warner Bros","ratings":[8.0,9.0,9.0,10.0,10.0,3.0]}
 {"title":"Harry Potter and the Half Blood Prince","producer":"Warner Bros","ratings":[9.0,8.0,9.0]}
 {"title":"Star Wars Return of the Jedi","producer":"Lucasfilm","ratings":[9.0,9.0,8.0]}
 {"title":"Jaws","producer":"Universal Pictures","ratings":[9.0,9.0,8.0]}
-{"title":"Harry Potter and the Philosophers Stone","producer":"Warner Bros","ratings":[8.0,9.0,8.0,9.0]}
+{"title":"Harry Potter and the Philosophers Stone","producer":"Warner Bros","ratings":[8.0,9.0,8.0,9.0,10.0]}
 {"title":"Avatar","producer":"20th Century Fox","ratings":[8.0,8.0,9.0,9.0]}
 {"title":"The Hobbit The Desolation of Smaug","producer":"Warner Bros","ratings":[8.0,8.0,9.0]}
 {"title":"Harry Potter and the Chamber of Secrets","producer":"Warner Bros","ratings":[8.0,8.0,9.0]}
 {"title":"Harry Potter and the Order of the Phoenix","producer":"Warner Bros","ratings":[8.0,8.0,9.0]}
 {"title":"Harry Potter and the Deathly Hallows Part 1","producer":"Warner Bros","ratings":[8.0,9.0,8.0]}
 {"title":"Avatar The Way of Water","producer":"20th Century Studios","ratings":[8.0,9.0,8.0]}
+{"title":"Harry Potter and the Goblet of Fire","producer":"Warner Bros","ratings":[8.0,9.0,9.0,10.0,10.0,3.0]}
 {"title":"The Hobbit An Unexpected Journey","producer":"Warner Bros","ratings":[7.0,8.0,8.0,9.0]}
 {"title":"Barbie","producer":"Warner Bros","ratings":[7.0,8.0,7.0,9.0]}
 {"title":"The Hobbit The Battle of the Five Armies","producer":"Warner Bros","ratings":[7.0,7.0,8.0]}
@@ -48,3 +48,4 @@
 {"title":"Star Wars Attack of the Clones","producer":"Lucasfilm","ratings":[7.0,7.0,8.0]}
 {"title":"Dune Part One","producer":"Warner Bros","ratings":[]}
 {"title":"Dune Part Two","producer":"Warner Bros","ratings":[]}
+{"title":"Inception","producer":"Warner Bros","ratings":[]}

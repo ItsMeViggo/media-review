@@ -22,9 +22,10 @@ public class AppManager {
     private final String welcomeMessage = """
             Welcome to Movie Ratings!
             - This program is made by Viggo Öfors
-            - 2 months in to the Software Engineering Program
+            - 2.5 months in to the Software Engineering Program
             - Version 1.0.0
-            - Using Java, Maven and JOptionPane for GUI
+  
+  
             """;
 
     public void start() {

@@ -29,12 +29,14 @@ public class DatabaseStorage implements Storage {
             IO.println("File not found.");
         }
 
-        for (Movie movie : movies) {
-            String movieJson = gson.toJson(movie);
-            try {
-                Files.writeString(path, movieJson + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            } catch (IOException e) {
-                IO.println("File could not be created.");
+        if (!movies.isEmpty()) {
+            for (Movie movie : movies) {
+                String movieJson = gson.toJson(movie);
+                try {
+                    Files.writeString(path, movieJson + System.lineSeparator(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                } catch (IOException e) {
+                    IO.println("File could not be created.");
+                }
             }
         }
     }

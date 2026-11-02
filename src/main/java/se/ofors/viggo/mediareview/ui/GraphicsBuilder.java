@@ -61,7 +61,7 @@ public class GraphicsBuilder {
                 JOptionPane.INFORMATION_MESSAGE,
                 null,
                 choices,
-                choices[2]
+                choices[0]
         );
     }
 }
